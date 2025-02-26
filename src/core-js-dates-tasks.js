@@ -319,8 +319,27 @@ function getQuarter(date) {
  * { start: '01-01-2024', end: '15-01-2024' }, 1, 3 => ['01-01-2024', '05-01-2024', '09-01-2024', '13-01-2024']
  * { start: '01-01-2024', end: '10-01-2024' }, 1, 1 => ['01-01-2024', '03-01-2024', '05-01-2024', '07-01-2024', '09-01-2024']
  */
-function getWorkSchedule(/* period, countWorkDays, countOffDays */) {
-  throw new Error('Not implemented');
+function getWorkSchedule(period, countWorkDays, countOffDays) {
+  const endStr = period.end.split('-').reverse().join('-');
+  const dateStr = period.start.split('-').reverse().join('-');
+  const end = new Date(endStr);
+  const date = new Date(dateStr);
+  const result = [];
+  while (date < end) {
+    for (let i = 0; i < countWorkDays; i += 1) {
+      const str = `${date.getUTCDate().toString().padStart(2, '0')}-${(date.getUTCMonth() + 1).toString().padStart(2, '0')}-${date.getFullYear()}`;
+      result.push(str);
+      date.setDate(date.getDate() + 1);
+    }
+    for (let j = 0; j < countOffDays; j += 1) {
+      date.setDate(date.getDate() + 1);
+    }
+  }
+  if (date.getMonth() === end.getMonth() && date.getDate() === end.getDate()) {
+    const str = `${date.getUTCDate().toString().padStart(2, '0')}-${(date.getUTCMonth() + 1).toString().padStart(2, '0')}-${date.getFullYear()}`;
+    result.push(str);
+  }
+  return result;
 }
 
 /**
